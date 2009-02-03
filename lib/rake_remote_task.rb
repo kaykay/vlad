@@ -173,9 +173,8 @@ class Rake::RemoteTask < Rake::Task
 
   def rsync local, remote
     cmd = [rsync_cmd, rsync_flags, local, "#{@target_host}:#{remote}"].flatten.compact
-
+    cmd = cmd.join(' ')
     success = system(*cmd)
-
     unless success then
       raise Vlad::CommandFailedError, "execution failed: #{cmd.join ' '}"
     end
@@ -188,8 +187,8 @@ class Rake::RemoteTask < Rake::Task
   def run command
     cmd = [ssh_cmd, ssh_flags, target_host, command].compact
     result = []
-
-    warn cmd.join(' ') if $TRACE
+    cmd = cmd.join(' ')
+    warn cmd if $TRACE
 
     pid, inn, out, err = popen4(*cmd)
 
@@ -310,7 +309,7 @@ class Rake::RemoteTask < Rake::Task
     }.flatten.uniq.sort
   end
 
-  def self.mandatory name, desc # :nodoc:
+  def self.mandatory name, desc # :nodc:
     self.set(name) do
       raise(Vlad::ConfigurationError,
             "Please specify the #{desc} via the #{name.inspect} variable")
